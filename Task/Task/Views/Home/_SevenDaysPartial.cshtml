@@ -1,0 +1,28 @@
+﻿@model Task.Models.ShortWeather 
+ 
+<div class="row text-center">
+    <div class="col-md-2">
+        </div>
+    @foreach (var item in Model.ListWeather)
+    {
+        string link = String.Format("http://openweathermap.org/img/w/{0}.png", item.Weather[0].icon);
+    <div class="col-md-1">
+        <div class="row text-center">
+            <h4><strong>@item.Date.DayOfWeek</strong></h4>
+            <h3>@item.Date.Day</h3>
+            <img src="@link" />
+            <p><em>@item.Weather[0].description</em></p>
+         </div>
+            <div class="row text-center">
+                    <p>Max @if (item.Temperature.morn > 0)
+                    { string text = String.Format("+{0}", Math.Round(item.Temperature.max)); <strong>@text </strong>}
+                    else
+                    {@Math.Round(item.Temperature.max)}</p>
+                    <p>Min @if (item.Temperature.morn > 0)
+                    {string text = String.Format("+{0}", Math.Round(item.Temperature.min));<strong> @text </strong>}
+                    else
+                    {@Math.Round(item.Temperature.min)} </p>
+            </div>
+    </div>
+    }
+</div>

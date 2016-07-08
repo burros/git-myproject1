@@ -1,0 +1,56 @@
+﻿@model Task.Models.ShortWeather
+
+
+    <div class="row ">
+        <div class="col-md-2">
+        </div>
+        @foreach (var item in Model.ListWeather)
+        {
+            string link = String.Format("http://openweathermap.org/img/w/{0}.png", item.Weather[0].icon);
+            <div class="col-md-3">
+                <div class="row ">
+                    <div class="row ">
+                        <div class="col-md-6 text-center">
+                            <h4><strong>@item.Date.DayOfWeek</strong></h4>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        
+                        <h3>@item.Date.Day</h3>
+                        <img src="@link" />
+                        <p><em>@item.Weather[0].description</em></p>
+                        <p><em>Max</em> 
+                        @if (item.Temperature.morn > 0)
+                            {string text = String.Format("+{0}", Math.Round(item.Temperature.max));<strong> @text </strong>}
+                        else
+                            {@Math.Round(item.Temperature.max)} 
+                        <em>Min</em> 
+                        @if (item.Temperature.morn > 0)
+                        {string text = String.Format("+{0}", Math.Round(item.Temperature.min));<strong> @text </strong>}
+                        else
+                        {@Math.Round(item.Temperature.min)}</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p>Night @if (item.Temperature.morn > 0)
+                        {string text = String.Format("+{0}", Math.Round(item.Temperature.night)); @text }
+                        else
+                        {@Math.Round(item.Temperature.night)}</p>
+                        <p>Morn @if (item.Temperature.morn > 0)
+                        {string text = String.Format("+{0}", Math.Round(item.Temperature.morn)); @text }
+                        else
+                        {@Math.Round(item.Temperature.morn)}</p>
+                        <p>Day @if (item.Temperature.morn > 0)
+                        {string text = String.Format("+{0}", Math.Round(item.Temperature.day)); @text }
+                        else
+                        {@Math.Round(item.Temperature.day)}</p>
+                        <p>Even @if (item.Temperature.morn > 0)
+                        {string text = String.Format("+{0}", Math.Round(item.Temperature.eve)); @text }
+                        else
+                        {@Math.Round(item.Temperature.eve)}</p>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+

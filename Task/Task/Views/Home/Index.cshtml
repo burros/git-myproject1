@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    @model Task.Models.ShortWeather
+}
+<div class="row" style="padding-top: 10px">
+    <div class="row">
+        <div class="col-lg-6 col-md-offset-2">
+        <form class="form-inline" action="/Home/Index" method="get">
+            <label for="citySearch">Enter the city</label>
+            <input type="text" class="input-medium search-query" name="city" id="citySearch" placeholder="City">
+            <button type="submit" class="btn">Search</button>
+        </form>    
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-6 col-md-offset-2">
+                <ul class="list-inline">
+                    <li>@Html.ActionLink("Lviv", "Index", "Home", new { city = "Lviv", day = "current" }, null)</li>
+                    <li>@Html.ActionLink("Kharkiv", "Index", "Home", new { city = "Kharkiv", day = "current" }, null)</li>
+                    <li>@Html.ActionLink("Kiev", "Index", "Home", new { city = "Kiev", day = "current" }, null)</li>
+                    <li>@Html.ActionLink("Dnipropetrovsk", "Index", "Home", new { city = "Dnipropetrovsk", day = "current" }, null)</li>
+                    <li>@Html.ActionLink("Odessa", "Index", "Home", new { city = "Odessa", day = "current" }, null)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row text-left">
+            <div class="col-lg-6 col-md-offset-2">
+                <h3 class="text-left">Weather in @Model.NameOfCity</h3>
+            </div>
+        </div>
+        <ul class="nav nav-tabs col-md-offset-2 col-md-8">
+        <li @if (ViewBag.CurrentSelected != null && ViewBag.CurrentSelected) {@:class= "active"
+            } >@Html.ActionLink("Today", "Index", "Home", new { city = ViewBag.NameOfCity, day = "current" }, null)</li>
+        <li @if (ViewBag.ThreeSelected != null && ViewBag.ThreeSelected) {@:class= "active"
+            } >@Html.ActionLink("3 days", "Index", "Home", new { city = ViewBag.NameOfCity, day = "three" }, null)</li>
+        <li @if (ViewBag.SevenSelected != null && ViewBag.SevenSelected) {@:class= "active"
+            } >@Html.ActionLink("7 days", "Index", "Home", new { city = ViewBag.NameOfCity, day = "seven" }, null)</li>
+    </ul>
+    </div>
+    <div class="row">
+        @if (Model.ListWeather.Count == 1){@Html.Partial("_CurrentDaysPartial", Model)}
+        @if (Model.ListWeather.Count == 3){@Html.Partial("_ThreeDaysPartial", Model)}
+        @if(Model.ListWeather.Count == 7){@Html.Partial("_SevenDaysPartial", Model)}
+    </div>
+</div>
+
+

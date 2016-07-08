@@ -1,0 +1,43 @@
+﻿@model Task.Models.ShortWeather
+
+<div class="row text-center">
+    <div class="col-md-2">
+    </div>
+    @{var item = Model.ListWeather[0];
+      string link = String.Format("http://openweathermap.org/img/w/{0}.png", item.Weather[0].icon); }
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3><strong>@item.Date.DayOfWeek</strong></h3>
+                    <h2>@item.Date.Day</h2>
+                    <img src="@link" />
+                    <p><em>@item.Weather[0].description</em></p>
+                </div>
+                <div class="col-md-6 bottom-align-text">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h2>@if (item.Temperature.morn > 0){string text = String.Format("+{0}", Math.Round(item.Temperature.night)); @text }
+                            else{@Math.Round(item.Temperature.night)}</h2>
+                            <h4>Night</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <h2>@if(item.Temperature.morn > 0){ string text = String.Format("+{0}", Math.Round(item.Temperature.morn)); @text }
+                            else{@Math.Round(item.Temperature.morn)}</h2>
+                            <h4>Morning</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <h2>@if (item.Temperature.morn > 0){string text = String.Format("+{0}", Math.Round(item.Temperature.day)); @text }
+                            else{@Math.Round(item.Temperature.day)}</h2>
+                            <h4>Day</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <h2>@if (item.Temperature.morn > 0){string text = String.Format("+{0}", Math.Round(item.Temperature.eve)); @text }
+                            else{@Math.Round(item.Temperature.eve)}</h2>
+                            <h4>Evening</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
