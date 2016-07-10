@@ -9,14 +9,27 @@ using Newtonsoft.Json;
 
 namespace Task.Services
 {
-    public enum WeatherDays
+    interface IWeatherManager
     {
-        Current=1,
-        Three =3,
-        Seven =7
+        RootObject WeatherData { get; set; }
+        ShortWeather ShortWeatherData { get; }
     }
 
-    public class WeatherManager
+    public class WeatherData
+    {
+        public string NameOfCity { get; set; } 
+        public string KeyOfApi { get; set; } 
+        public WeatherDays WeatherDays { get; set; }
+    }
+
+    public enum WeatherDays
+    {
+        Current = 1,
+        Three = 3,
+        Seven = 7
+    }
+
+    public class WeatherManager: IWeatherManager
     {
         private RootObject _weatherData;
         public RootObject WeatherData
@@ -29,14 +42,14 @@ namespace Task.Services
             get { return new ShortWeather(WeatherData);}
         }
 
-        private RootObject GetDataFromApi(string nameOfCity, string keyOfApi, WeatherDays weatherDays)
+        private RootObject GetDataFromApi(WeatherData weatherData)
         {
             try
             {
                 var client = new WebClient();
                 var reply =
                     client.DownloadString(string.Format("http://api.openweathermap.org/data/2.5/forecast/daily?q={0}&mode=json&units=metric&cnt={1}&APPID={2}",
-                   nameOfCity, (int)weatherDays, keyOfApi));
+                   weatherData.NameOfCity, (int)weatherData.WeatherDays, weatherData.KeyOfApi));
                 return JsonConvert.DeserializeObject<RootObject>(reply);
             }
             catch
@@ -45,9 +58,9 @@ namespace Task.Services
             }
         }
 
-        public WeatherManager(string nameOfCity, string keyOfApi, WeatherDays weatherDays)
+        public WeatherManager(WeatherData weatherData)
         {
-            WeatherData = GetDataFromApi(nameOfCity, keyOfApi, weatherDays);
+            WeatherData = GetDataFromApi(weatherData);
         }
 
     }
