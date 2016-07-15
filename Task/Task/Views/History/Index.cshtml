@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "History page";
+    @model Task.Models.ShortWeather
+               
+}
+
+<div class="row" style="padding-top: 10px">
+    <div class="row">
+        <div class="col-lg-6 col-md-offset-2">
+                <h2>History weather</h2>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        Change date
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach (DateTime item in ViewBag.HistoryDate)
+                        {
+                            <li>
+                                @Html.ActionLink(item.ToShortDateString(), "Index", "History", new {date = item.ToShortDateString(), city = ViewBag.CityName}, null)
+                            </li>
+                        }
+                        
+                    </ul>
+                </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row text-left">
+            <div class="col-lg-6 col-md-offset-2">
+                <h3 class="text-left">Weather in @ViewBag.CityName</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        @if (Model!=null)
+        {@Html.Partial("_CurrentDaysPartial", Model)
+        }
+    </div>
+</div>
+

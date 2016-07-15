@@ -19,6 +19,7 @@ namespace Task.Models
         public string name { get; set; }
         public Coord coord { get; set; }
         public string country { get; set; }
+
     }
 
     public class Temp
@@ -37,6 +38,7 @@ namespace Task.Models
         public string main { get; set; }
         public string description { get; set; }
         public string icon { get; set; }
+        
     }
 
     public class List
@@ -58,42 +60,8 @@ namespace Task.Models
     }
 
 
-    public class ShortWeather
-    {
-        public string NameOfCity { get; set; }
-        public List<ListWeather> ListWeather { get; set; }
-        public ShortWeather(RootObject allWeatherInfo)
-        {
-            if (allWeatherInfo != null)
-            {
-                NameOfCity = allWeatherInfo.city.name;
-                ListWeather = new List<ListWeather>();
-                foreach(var item in allWeatherInfo.list)
-                {
-                    ListWeather.Add(new ListWeather(item));
-                }
-            }
-        }
+    
 
-    }
-
-    public class ListWeather
-    {
-        public DateTime Date { get; set; }
-        public Temp Temperature { get; set; }
-        public double Pressure { get; set; }
-        public int Humidity { get; set; }
-        public List<Weather> Weather { get; set; }
-
-        public ListWeather(List list)
-        {
-            Temperature = list.temp;
-            Pressure = list.pressure;
-            Humidity = list.humidity;
-            Weather = list.weather;
-            Date = new DateTime(1970, 1, 1).AddSeconds(list.dt);
-        }
-
-    }
+   
 
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Task.Models;
 using Task.Services;
 
 namespace Task.Controllers
@@ -43,7 +44,31 @@ namespace Task.Controllers
                     break;
             }
             _weatherManager = ninjectKernel.Get<IWeatherManager>();
+
+            
+            DbManager dbManager = new DbManager(_weatherManager.ShortWeatherData);
+            dbManager.AddWeather();
+            ViewBag.FavoriteCityList = dbManager.GetFavoriteCity();
+
             return View(_weatherManager.ShortWeatherData);
+        }
+
+       
+        public ActionResult AddCity(string city)
+        {
+            DbManager dbManager = new DbManager();
+            dbManager.AddFavoriteCity(city);
+            ViewBag.FavoriteCityList = dbManager.GetFavoriteCity();
+            return RedirectToAction("Index");
+        }
+
+
+        public ActionResult DeleteCity(string city, string day)
+        {
+            DbManager dbManager = new DbManager();
+            dbManager.DeleteFavoriteCity(city);
+            ViewBag.FavoriteCityList = dbManager.GetFavoriteCity();
+            return RedirectToAction("Index");
         }
 
 

@@ -15,20 +15,22 @@
 
     <div class="row">
         <div class="row">
-            <div class="col-lg-6 col-md-offset-2">
-                <ul class="list-inline">
-                    <li>@Html.ActionLink("Lviv", "Index", "Home", new { city = "Lviv", day = "current" }, null)</li>
-                    <li>@Html.ActionLink("Kharkiv", "Index", "Home", new { city = "Kharkiv", day = "current" }, null)</li>
-                    <li>@Html.ActionLink("Kiev", "Index", "Home", new { city = "Kiev", day = "current" }, null)</li>
-                    <li>@Html.ActionLink("Dnipropetrovsk", "Index", "Home", new { city = "Dnipropetrovsk", day = "current" }, null)</li>
-                    <li>@Html.ActionLink("Odessa", "Index", "Home", new { city = "Odessa", day = "current" }, null)</li>
-                </ul>
+            <div class="col-lg-6 col-md-offset-2" id="favorite-list">
+                @Html.Partial("_FavoriteCityPartial")
             </div>
         </div>
-        <div class="row text-left">
+        <div class="row">
             <div class="col-lg-6 col-md-offset-2">
-                <h3 class="text-left">Weather in @Model.NameOfCity</h3>
+                <h4 class="text">@Html.ActionLink("History", "Index", "History", new { city = @Model.CityWeather.CityName }, null)</h4>
             </div>
+
+        </div>
+        <div class="row text-left">
+            
+            <div class="col-lg-6 col-md-offset-2">
+                <h3 class="text-left">Weather in @Model.CityWeather.CityName @Html.ActionLink("+", "AddCity", new {city = @Model.CityWeather.CityName, day = "current"})</h3>
+            </div>
+
         </div>
         <ul class="nav nav-tabs col-md-offset-2 col-md-8">
         <li @if (ViewBag.CurrentSelected != null && ViewBag.CurrentSelected) {@:class= "active"

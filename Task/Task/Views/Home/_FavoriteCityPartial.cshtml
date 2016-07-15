@@ -1,0 +1,15 @@
+﻿@using System.Drawing
+
+
+<ul class="list-inline">
+    @foreach (var item in ViewBag.FavoriteCityList)
+    {
+
+        <li>
+
+            @Html.ActionLink(item as string, "Index", "Home", new {city = item as string, day = "current"}, null)
+            @Html.ActionLink("x", "DeleteCity", new { city = item as string, day = "current" })
+
+        </li>
+    }
+</ul>
