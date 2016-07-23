@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
+
 
 namespace Task.Models
 {
@@ -19,23 +22,23 @@ namespace Task.Models
             _shortWeather = shortWeather;
         }
 
-        public List<string> GetFavoriteCity()
+        public async Task<List<string>> GetFavoriteCityAsync()
         {
             var query = from city in _context.FavoriteCity
                 select city.FavoriteCityName;
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
-        public void DeleteFavoriteCity(string cityName)
+        public async System.Threading.Tasks.Task DeleteFavoriteCityAsync(string cityName)
         {
             var query = from city in _context.FavoriteCity
                 where city.FavoriteCityName == cityName
                 select city;
-            _context.FavoriteCity.Remove(query.FirstOrDefault());
-            _context.SaveChanges();
+            _context.FavoriteCity.Remove(await query.FirstOrDefaultAsync());
+            await _context.SaveChangesAsync();
         }
 
-        public void AddFavoriteCity(string cityName)
+        public async System.Threading.Tasks.Task AddFavoriteCityAsync(string cityName)
         {
             var query = from city in _context.FavoriteCity
                         where city.FavoriteCityName == cityName
@@ -43,15 +46,15 @@ namespace Task.Models
             if (!query.Any())
             {
                 _context.FavoriteCity.Add(new FavoriteCity() {FavoriteCityName = cityName});
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public ShortWeather GetHistoryWeather(string cityName, DateTime dateTime)
+        public async Task<ShortWeather> GetHistoryWeatherAsync(string cityName, DateTime dateTime)
         {
-            var query = (from weather in _context.ShortWeather.Include("CityWeather")
+            var query = await (from weather in _context.ShortWeather.Include("CityWeather")
                 where weather.CityWeather.CityName == cityName && weather.ListWeather.Any(e => e.Date == dateTime)
-                select weather).ToList();
+                select weather).ToListAsync();
 
             ShortWeather shortWeather = new ShortWeather();
             ListWeather listWeather = new ListWeather();
@@ -69,17 +72,20 @@ namespace Task.Models
             }
             shortWeather.ListWeather = new List<ListWeather>();
             var firstOrDefault = query.FirstOrDefault();
-            if (firstOrDefault != null) shortWeather.CityWeather = firstOrDefault.CityWeather;
+            if (firstOrDefault != null)
+                shortWeather.CityWeather = firstOrDefault.CityWeather;
+            else
+                return null;
             shortWeather.ListWeather.Add(listWeather);
             return shortWeather;
         }
 
-        public List<DateTime> GetDateHistoryWeather(string cityName)
+        public async Task<List<DateTime>> GetDateHistoryWeatherAsync(string cityName)
         {
             DateTime dateTime = DateTime.Today;
-            var query = from weather in _context.ShortWeather.Include("CityWeather")
+            var query = await (from weather in _context.ShortWeather.Include("CityWeather")
                         where weather.CityWeather.CityName == cityName
-                        select weather.ListWeather;
+                        select weather.ListWeather).ToListAsync();
             List<DateTime> list = new List<DateTime>();
             foreach (var item in query)
             {
@@ -88,13 +94,13 @@ namespace Task.Models
             return list;
         }  
 
-        public void AddWeather()
+        public async System.Threading.Tasks.Task AddWeatherAsync()
         {
             if (!FindCity())
             {
                 //_context.CityWeather.Add(_shortWeather.CityWeather);
                 _context.ShortWeather.Add(_shortWeather);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -113,7 +119,7 @@ namespace Task.Models
                 if (flagChange)
                 {
                     _context.ShortWeather.Add(newWeather);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
         }
@@ -123,7 +129,6 @@ namespace Task.Models
             var query = from weather in _context.ShortWeather
                 where weather.CityWeather.CityWeatheIdApi == cityId && weather.ListWeather.Any(e => e.Date == dateTime)
                 select weather;
-            var querys = query.ToList();
             if (query.Any())
                 return true;
             return false;

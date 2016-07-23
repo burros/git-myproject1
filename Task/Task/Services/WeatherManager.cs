@@ -5,14 +5,19 @@ using System.Web;
 using System.Net;
 using Task.Models;
 using System.IO;
+using System.Net.Http;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+
 
 namespace Task.Services
 {
     interface IWeatherManager
     {
         RootObject WeatherData { get; set; }
-        ShortWeather ShortWeatherData { get; }
+        ShortWeather ShortWeatherData();
+        System.Threading.Tasks.Task GetDataFromApiAsync();
+
     }
 
     public class WeatherData
@@ -29,28 +34,38 @@ namespace Task.Services
         Seven = 7
     }
 
+
+
     public class WeatherManager: IWeatherManager
     {
+        private WeatherData _data;
         private RootObject _weatherData;
         public RootObject WeatherData
         {
             get { return _weatherData; }
             set { _weatherData = value; }
         }
-        public ShortWeather ShortWeatherData
+        public  ShortWeather ShortWeatherData()
         {
-            get { return new ShortWeather(WeatherData);}
+            //GetDataFromApi();
+            if (WeatherData == null)
+                return null;
+            return new ShortWeather(WeatherData);
+            
         }
 
-        private RootObject GetDataFromApi(WeatherData weatherData)
+        public async System.Threading.Tasks.Task GetDataFromApiAsync()
         {
             try
             {
-                var client = new WebClient();
-                var reply =
-                    client.DownloadString(string.Format("http://api.openweathermap.org/data/2.5/forecast/daily?q={0}&mode=json&units=metric&cnt={1}&APPID={2}",
-                   weatherData.NameOfCity, (int)weatherData.WeatherDays, weatherData.KeyOfApi));
-                return JsonConvert.DeserializeObject<RootObject>(reply);
+                using (var client = new WebClient())
+                {
+                    var reply = await
+                    client.DownloadStringTaskAsync(string.Format("http://api.openweathermap.org/data/2.5/forecast/daily?q={0}&mode=json&units=metric&cnt={1}&APPID={2}",
+                        _data.NameOfCity, (int)_data.WeatherDays, _data.KeyOfApi));
+                    var result = await JsonConvert.DeserializeObjectAsync<RootObject>(reply);
+                    WeatherData = result;
+                }
             }
             catch
             {
@@ -60,7 +75,7 @@ namespace Task.Services
 
         public WeatherManager(WeatherData weatherData)
         {
-            WeatherData = GetDataFromApi(weatherData);
+            _data = weatherData;
         }
 
     }

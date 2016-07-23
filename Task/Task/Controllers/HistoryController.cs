@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Task.Models;
@@ -11,7 +12,7 @@ namespace Task.Controllers
     {
         //
         // GET: /History/
-        public ActionResult Index(string city = "Lviv", string date = null)
+        public async Task<ActionResult> Index(string city = "Lviv", string date = null)
         {
             if (string.IsNullOrEmpty(city))
                 city = "Lviv";
@@ -19,9 +20,9 @@ namespace Task.Controllers
                 date = DateTime.Now.ToLongDateString();
             DbManager dbManager = new DbManager();
 
-            ViewBag.HistoryDate = dbManager.GetDateHistoryWeather(city);
+            ViewBag.HistoryDate = await dbManager.GetDateHistoryWeatherAsync(city);
             ViewBag.CityName = city;
-            return View(dbManager.GetHistoryWeather(city, DateTime.Parse(date).AddHours(10)));
+            return View( await dbManager.GetHistoryWeatherAsync(city, DateTime.Parse(date).AddHours(10)));
            
         }
 	}

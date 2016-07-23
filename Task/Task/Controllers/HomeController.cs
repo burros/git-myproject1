@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Task.Models;
@@ -14,7 +15,7 @@ namespace Task.Controllers
         private IWeatherManager _weatherManager;
 
         [HttpGet]
-        public ActionResult Index(string city = "Lviv", string day = "current")
+        public async Task<ActionResult> Index(string city = "Lviv", string day = "current")
         {
             IKernel ninjectKernel = new StandardKernel();
             
@@ -44,30 +45,31 @@ namespace Task.Controllers
                     break;
             }
             _weatherManager = ninjectKernel.Get<IWeatherManager>();
+            await _weatherManager.GetDataFromApiAsync();
+            var shortWeatherData =  _weatherManager.ShortWeatherData();
+            if (shortWeatherData != null)
+            {
+                DbManager dbManager = new DbManager(shortWeatherData);
+                await dbManager.AddWeatherAsync();
+                ViewBag.FavoriteCityList = await dbManager.GetFavoriteCityAsync();
+            }
 
-            
-            DbManager dbManager = new DbManager(_weatherManager.ShortWeatherData);
-            dbManager.AddWeather();
-            ViewBag.FavoriteCityList = dbManager.GetFavoriteCity();
-
-            return View(_weatherManager.ShortWeatherData);
+            return View(shortWeatherData);
         }
 
        
-        public ActionResult AddCity(string city)
+        public async Task<ActionResult> AddCity(string city)
         {
             DbManager dbManager = new DbManager();
-            dbManager.AddFavoriteCity(city);
-            ViewBag.FavoriteCityList = dbManager.GetFavoriteCity();
+            await dbManager.AddFavoriteCityAsync(city);
             return RedirectToAction("Index");
         }
 
 
-        public ActionResult DeleteCity(string city, string day)
+        public async Task<ActionResult> DeleteCity(string city, string day)
         {
             DbManager dbManager = new DbManager();
-            dbManager.DeleteFavoriteCity(city);
-            ViewBag.FavoriteCityList = dbManager.GetFavoriteCity();
+            await dbManager.DeleteFavoriteCityAsync(city);
             return RedirectToAction("Index");
         }
 

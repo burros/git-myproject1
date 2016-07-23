@@ -35,8 +35,17 @@
         </div>
     </div>
     <div class="row">
-        @if (Model!=null)
-        {@Html.Partial("_CurrentDaysPartial", Model)
+        @if (Model != null)
+        {
+            @Html.Partial("_CurrentDaysPartial", Model)
+        }
+        else
+        {
+            <div class="row text-left">
+            <div class="col-lg-6 col-md-offset-2">
+                <h3 class="text-left">We don't have weather for this city :(</h3>
+            </div>
+            </div>
         }
     </div>
 </div>
